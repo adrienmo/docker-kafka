@@ -16,6 +16,11 @@ RUN apt-get update && \
     tar xfz /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -C /opt && \
     rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz
 
+RUN apt-get update && \
+    apt-get install -y net-tools && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
 ADD scripts/create-topics.sh /usr/bin/create-topics.sh
 ADD scripts/start-kafka.sh /usr/bin/start-kafka.sh
 
