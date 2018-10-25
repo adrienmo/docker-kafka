@@ -82,5 +82,9 @@ if [ ! -z "$TIMESTAMP_DIFFERENCE" ]; then
     echo "log.message.timestamp.difference.max.ms=${TIMESTAMP_DIFFERENCE}" >> $KAFKA_HOME/config/server.properties
 fi
 
+#Force container to be able to resolve its hostname
+HOST_IP="$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)"
+echo "$HOST_IP $ADVERTISED_HOST" >> /etc/hosts
+
 # Run Kafka
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
