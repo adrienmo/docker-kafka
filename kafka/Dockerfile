@@ -21,6 +21,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
+RUN sed -i.bak 's/#delete/delete/g' $KAFKA_HOME/config/server.properties
+RUN echo "auto.create.topics.enable=false" >> $KAFKA_HOME/config/server.properties
 ADD scripts/create-topics.sh /usr/bin/create-topics.sh
 ADD scripts/start-kafka.sh /usr/bin/start-kafka.sh
 
