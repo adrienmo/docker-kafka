@@ -19,22 +19,15 @@ if [ -z "$ADVERTISED_HOST" ]; then
     ADVERTISED_HOST=`route -n | awk '/UG[ \t]/{print $2}'`
 fi
 
-if [ ! -z "$ADVERTISED_HOST" ]; then
-    echo "advertised host: $ADVERTISED_HOST"
-    if grep -q "^advertised.host.name" $KAFKA_HOME/config/server.properties; then
-        sed -r -i "s/#(advertised.host.name)=(.*)/\1=$ADVERTISED_HOST/g" $KAFKA_HOME/config/server.properties
-    else
-        echo "advertised.host.name=$ADVERTISED_HOST" >> $KAFKA_HOME/config/server.properties
-    fi
-fi
+echo "ssl.keystore.location=/etc/ssl/server.keystore.jks" >> $KAFKA_HOME/config/server.properties
+echo "ssl.keystore.password=kafka_ex" >> $KAFKA_HOME/config/server.properties
+echo "ssl.key.password=kafka_ex" >> $KAFKA_HOME/config/server.properties
+echo "ssl.secure.random.implementation=SHA1PRNG" >> $KAFKA_HOME/config/server.properties
+echo "security.inter.broker.protocol=PLAINTEXT" >> $KAFKA_HOME/config/server.properties
 
-if [ ! -z "$ADVERTISED_PORT" ]; then
-    echo "advertised port: $ADVERTISED_PORT"
-    if grep -q "^advertised.port" $KAFKA_HOME/config/server.properties; then
-        sed -r -i "s/#(advertised.port)=(.*)/\1=$ADVERTISED_PORT/g" $KAFKA_HOME/config/server.properties
-    else
-        echo "advertised.port=$ADVERTISED_PORT" >> $KAFKA_HOME/config/server.properties
-    fi
+
+if [ ! -z "$ADVERTISED_HOST" ] && [ ! -z "$ADVERTISED_PORT" ]; then
+    echo "listeners=SSL://$ADVERTISED_HOST:$ADVERTISED_PORT,PLAINTEXT://:9093" >> $KAFKA_HOME/config/server.properties
 fi
 
 # Set the zookeeper chroot

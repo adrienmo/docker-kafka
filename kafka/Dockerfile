@@ -25,6 +25,7 @@ RUN sed -i.bak 's/#delete/delete/g' $KAFKA_HOME/config/server.properties
 RUN echo "\nauto.create.topics.enable=false" >> $KAFKA_HOME/config/server.properties
 ADD scripts/create-topics.sh /usr/bin/create-topics.sh
 ADD scripts/start-kafka.sh /usr/bin/start-kafka.sh
+ADD ssl /etc/ssl
 
 # Supervisor config
 ADD supervisor/kafka.conf supervisor/zookeeper.conf /etc/supervisor/conf.d/
