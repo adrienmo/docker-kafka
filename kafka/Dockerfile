@@ -26,6 +26,7 @@ RUN echo "\nauto.create.topics.enable=false" >> $KAFKA_HOME/config/server.proper
 ADD scripts/create-topics.sh /usr/bin/create-topics.sh
 ADD scripts/start-kafka.sh /usr/bin/start-kafka.sh
 ADD ssl /etc/ssl
+ADD jaas.conf /etc/jaas.conf
 
 # Supervisor config
 ADD supervisor/kafka.conf supervisor/zookeeper.conf /etc/supervisor/conf.d/

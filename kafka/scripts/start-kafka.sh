@@ -24,10 +24,11 @@ echo "ssl.keystore.password=kafka_ex" >> $KAFKA_HOME/config/server.properties
 echo "ssl.key.password=kafka_ex" >> $KAFKA_HOME/config/server.properties
 echo "ssl.secure.random.implementation=SHA1PRNG" >> $KAFKA_HOME/config/server.properties
 echo "security.inter.broker.protocol=PLAINTEXT" >> $KAFKA_HOME/config/server.properties
+echo "sasl.enabled.mechanisms=PLAIN" >> $KAFKA_HOME/config/server.properties
 
 
 if [ ! -z "$ADVERTISED_HOST" ] && [ ! -z "$ADVERTISED_PORT" ]; then
-    echo "listeners=SSL://$ADVERTISED_HOST:$ADVERTISED_PORT,PLAINTEXT://:9093" >> $KAFKA_HOME/config/server.properties
+    echo "listeners=SASL_SSL://$ADVERTISED_HOST:$ADVERTISED_PORT,PLAINTEXT://:9093" >> $KAFKA_HOME/config/server.properties
 fi
 
 # Set the zookeeper chroot
@@ -78,6 +79,8 @@ fi
 #Force container to be able to resolve its hostname
 HOST_IP="$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)"
 echo "$HOST_IP $ADVERTISED_HOST" >> /etc/hosts
+
+export EXTRA_ARGS="-Djava.security.auth.login.config=/etc/jaas.conf"
 
 # Run Kafka
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
